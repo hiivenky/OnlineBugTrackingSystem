@@ -8,6 +8,7 @@ public class BugtrackingsystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BugtrackingsystemApplication.class, args);
+		System.out.println("Application started");
 	}
 
 }
