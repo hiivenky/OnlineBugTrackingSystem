@@ -26,7 +26,7 @@ public class Developer extends Employee {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ticketAssigned",referencedColumnName = "ticketId")
 	private Ticket ticketAssigned; 
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER )
+	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@JoinColumn
 	private Manager manager;
 	private boolean assignStatus;
@@ -71,7 +71,7 @@ public class Developer extends Employee {
 	public String toString() {
 		return "Developer [ticketAssigned=" + ticketAssigned + ", manager=" + manager + ", assignStatus=" + assignStatus
 				+ ", getEmployeeId()=" + getEmployeeId() + ", getEmployeeName()=" + getEmployeeName()
-				+ ", getEmployeeRole()=" + getEmployeeRole() + ", getLoginname()=" + getLoginname()
+				 + ", getLoginname()=" + getLoginname()
 				+ ", getUserPassword()=" + getUserPassword() + ", getEmailId()=" + getEmailId() + ", getPhoneNumber()="
 				+ getPhoneNumber() + ", toString()=" + super.toString() + ", getClass()=" + getClass() + ", hashCode()="
 				+ hashCode() + "]";
