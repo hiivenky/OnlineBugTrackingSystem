@@ -28,7 +28,6 @@ public class Employee {
 	@GeneratedValue
 	private int employeeId ; 
 	private String employeeName;
-	private String employeeRole;
 	private String loginname; 
 	private String userPassword;
 	private String emailId;
@@ -43,7 +42,6 @@ public class Employee {
 		super();
 		this.employeeId = employeeId;
 		this.employeeName = employeeName;
-		this.employeeRole = employeeRole;
 		this.loginname = loginname;
 		this.userPassword = userPassword;
 		this.emailId = emailId;
@@ -61,11 +59,12 @@ public class Employee {
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
 	}
-	public String getEmployeeRole() {
-		return employeeRole;
+	
+	public String getRoles() {
+		return roles;
 	}
-	public void setEmployeeRole(String employeeRole) {
-		this.employeeRole = employeeRole;
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 	public String getLoginname() {
 		return loginname;
@@ -93,8 +92,8 @@ public class Employee {
 	}
 	@Override
 	public String toString() {
-		return "Employee [employeeId=" + employeeId + ", employeeName=" + employeeName + ", employeeRole="
-				+ employeeRole + ", loginname=" + loginname + ", userPassword=" + userPassword + ", emailId="
+		return "Employee [employeeId=" + employeeId + ", employeeName=" + employeeName 
+				+ ", loginname=" + loginname + ", userPassword=" + userPassword + ", emailId="
 				+ emailId + ", phoneNumber=" + phoneNumber + "]";
 	}
 }
