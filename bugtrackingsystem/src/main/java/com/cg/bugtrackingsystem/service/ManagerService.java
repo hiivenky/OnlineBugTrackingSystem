@@ -24,10 +24,11 @@ public interface ManagerService  {
 	public Project endProject(Integer projectId);
 	public Bug addBug(Bug bug,String projectName) throws Exception;
 	public Bug endBug(Integer bugId) throws Exception;
-	public Ticket raiseTicket(Ticket ticket) throws Exception;
+	public Ticket raiseTicket(Ticket ticket,Integer developerId,Integer bugId) throws Exception;
 	public Ticket deleteTicket(Integer ticketId) throws Exception;
 	public Employee addEmployee(Developer employee) throws Exception;
 	public Manager addManager(Manager manager) throws Exception;
 	public List<Project> getProjects(Integer managerId);
+	public List<Developer> getDevelopers(Integer managerId)throws Exception;
 
 }

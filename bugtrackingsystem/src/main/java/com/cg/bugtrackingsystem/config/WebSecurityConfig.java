@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-				.antMatchers("/manager/addProject").hasRole("ADMIN").antMatchers("/getApproveAccountNo").hasRole("ADMIN")
+				.antMatchers("/manager/addProject").hasRole("ADMIN").antMatchers("/manager/raiseTicket").hasRole("ADMIN")
 				.antMatchers("/addAmount").hasRole("CUSTOMER")
 				.antMatchers("/redirectAfterTransaction").hasRole("CUSTOMER")
 				.antMatchers("/getAmount").hasRole("CUSTOMER")

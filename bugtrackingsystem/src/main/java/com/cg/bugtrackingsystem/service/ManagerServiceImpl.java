@@ -1,6 +1,7 @@
 package com.cg.bugtrackingsystem.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.cg.bugtrackingsystem.repository.DeveloperRepository;
 import com.cg.bugtrackingsystem.repository.EmployeeRepository;
 import com.cg.bugtrackingsystem.repository.ManagerRepository;
 import com.cg.bugtrackingsystem.repository.ProjectRepository;
+import com.cg.bugtrackingsystem.repository.TicketRepository;
 
 /**
 *author: Venkatesh
@@ -41,6 +43,8 @@ public class ManagerServiceImpl implements ManagerService{
 	private DeveloperRepository developerDao;
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
+	@Autowired
+	private TicketRepository ticketDao;
 	
 	/**
 	*author: Venkatesh
@@ -73,7 +77,15 @@ public class ManagerServiceImpl implements ManagerService{
 		projectDao.save(project);
 		return project;
 	}
-	
+	/**
+	*author: Venkatesh
+	*Description : this function is used to add Manager
+	*created Date: 06/11/2019
+	*last modified : 06/11/2019
+	*Input : Project Object
+	*Output : Project Object            
+	 * @throws BtsException 
+	*/
 	@Override
 	public Manager addManager(Manager manager) throws BtsException {
 		if(manager==null) {
@@ -111,12 +123,28 @@ public class ManagerServiceImpl implements ManagerService{
 		managerDao.save(manager);
 		return manager;
 	}
-
+	/**
+	*author: Venkatesh
+	*Description : this function is used to add project
+	*created Date: 06/11/2019
+	*last modified : 07/11/2019
+	*Input : Integer projectId
+	*Output : Project Object            
+	 * @throws BtsException 
+	*/
 	@Override
 	public Project endProject(Integer projectId) {
 		return null;
 	}
-
+	/**
+	*author: Venkatesh
+	*Description : this function is used to add Bug
+	*created Date: 06/11/2019
+	*last modified : 07/11/2019
+	*Input : Bug Object
+	*Output : Bug Object            
+	 * @throws BtsException 
+	*/
 	@Override
 	public Bug addBug(Bug bug,String projectName) throws BtsException {
 		if(bug==null) {
@@ -130,17 +158,59 @@ public class ManagerServiceImpl implements ManagerService{
 		bugDao.save(bug);
 		return bug;
 	}
-    
+	/**
+	*author: Venkatesh
+	*Description : this function is used to end bug
+	*created Date: 06/11/2019
+	*last modified : 06/11/2019
+	*Input : Bug Object
+	*Output : Bug Object            
+	 * @throws BtsException 
+	*/
 	@Override
 	public Bug endBug(Integer bugId) {
 		
 		return null;
 	}
-
+	/**
+	*author: Venkatesh
+	*Description : this function is used to raise ticket
+	*created Date: 06/11/2019
+	*last modified : 07/11/2019
+	*Input : Ticket Object
+	*Output : Ticket Object            
+	 * @throws BtsException 
+	*/
 	@Override
-	public Ticket raiseTicket(Ticket ticket) {
-		// TODO Auto-generated method stub
-		return null;
+	public Ticket raiseTicket(Ticket ticket,Integer developerId,Integer bugId) throws BtsException {
+		Developer developer = developerDao.findByEmployeeId(developerId);
+		if(developer==null) {
+			throw new BtsException("Invalid Id entered");
+		}
+		if(developer.isAssignStatus()) {
+			throw new BtsException("Ticket is already assigned to the developer");
+		}
+		developer.setAssignStatus(true);
+		Bug bug = bugDao.findBybugId(bugId);
+		if(bug==null) {
+			throw new BtsException("Invalid bug Id entered");
+		}
+		if(ticket.getTicketDeadline().compareTo(LocalDateTime.now())<0) {
+			throw new BtsException("Ticket Deadline entered is invalid");
+		}
+		if(bug.getBugStatus().equals("notAssigned")) {
+			bug.setBugStatus("Assigned");
+			ticket.setAssignedToEmployee(developer);
+			ticket.setTicketStatus("Assigned");
+			bug.setTicket(ticket);
+			developer.setTicketAssigned(ticket);
+			bugDao.save(bug);
+			developerDao.save(developer);
+		}
+		else {
+			throw new BtsException("Bug is already assigned to a developer");
+		}
+		return ticket;
 	}
 
 	@Override
@@ -148,7 +218,15 @@ public class ManagerServiceImpl implements ManagerService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	/**
+	*author: Venkatesh
+	*Description : this function is used to raise ticket
+	*created Date: 06/11/2019
+	*last modified : 07/11/2019
+	*Input : Employee Object
+	*Output : Employee Object            
+	 * @throws BtsException 
+	*/
 	@Override
 	public Employee addEmployee(Developer employee) throws BtsException {
 		if(employee==null) {
@@ -183,15 +261,34 @@ public class ManagerServiceImpl implements ManagerService{
 		developerDao.save(employee);
 		employee.setLoginname(employee.getEmployeeName()+employee.getEmployeeId());
 		developerDao.save(employee);
-		return null;
+		return employee;
 	}
-
+	
 	@Override
 	public List<Project> getProjects(Integer managerId) {
 		return null;
 	}
-
-	
+	/**
+	*author: Venkatesh
+	*Description : this function is used to raise ticket
+	*created Date: 07/11/2019
+	*last modified : 07/11/2019
+	*Input : Ticket Object
+	*Output : Ticket Object            
+	 * @throws BtsException 
+	*/
+	@Override
+	public List<Developer> getDevelopers(Integer managerId) throws BtsException {
+		Manager manager = managerDao.findByEmployeeId(managerId);
+		if(manager==null) {
+			throw new BtsException("Invalid manager Id");
+		}
+		List<Developer> developers = manager.getDevelopers();
+		if(developers==null||developers.size()==0) {
+			throw new BtsException("No developer present");
+		}
+		return developers;
+	}	
 	
 
 }

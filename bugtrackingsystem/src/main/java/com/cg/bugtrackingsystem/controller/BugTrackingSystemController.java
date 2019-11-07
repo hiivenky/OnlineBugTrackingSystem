@@ -1,7 +1,9 @@
 package com.cg.bugtrackingsystem.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.bugtrackingsystem.dto.Bug;
+import com.cg.bugtrackingsystem.dto.CriticalLevel;
 import com.cg.bugtrackingsystem.dto.Developer;
 import com.cg.bugtrackingsystem.dto.Manager;
 import com.cg.bugtrackingsystem.dto.Project;
@@ -110,7 +113,7 @@ public class BugTrackingSystemController {
 		return new ResponseEntity<String>("Bug added successfully to the Project",HttpStatus.OK);
 	}
 	@PostMapping(value="manager/addDeveloper")
-	public ResponseEntity<String> raiseTicket(@ModelAttribute Developer developer,Authentication authentication){
+	public ResponseEntity<String> addDeveloper(@ModelAttribute Developer developer,Authentication authentication){
 		Manager manager;
 		try {
 			if(authentication.isAuthenticated()) {
@@ -126,6 +129,50 @@ public class BugTrackingSystemController {
 			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<String>("Developer added successfully",HttpStatus.OK);
+	}
+	
+	@PostMapping(value="manager/raiseTicket")
+	public ResponseEntity<String> raiseTicket(@ModelAttribute Ticket ticket,@RequestParam("deadLine")String deadLine,
+			@RequestParam("bugId")Integer bugId,@RequestParam("developerId")Integer developerId,Authentication authentication){
+		Manager manager;
+		boolean present = false;
+		try {
+			if(authentication.isAuthenticated()) {
+				SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
+				manager = (Manager)employeeService.getUser(userDetails.getUsername());
+				ticket.setAssignedByManager(manager);
+				ticket.setTicketDeadline(LocalDateTime.parse(deadLine,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+				List<Project> projects = manager.getProjects();
+				if(projects==null) {
+					return new ResponseEntity<String>("Projects not present create project first",HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+				List<Developer> developers = manager.getDevelopers();
+				if(developers!=null) {
+					for(int i=0;i<developers.size();i++) {
+						if(developers.get(i).getEmployeeId()==developerId) {
+							present =true;
+							break;
+						}
+					}
+					if(present) {
+						managerService.raiseTicket(ticket, developerId, bugId);
+					}
+					else {
+						return new ResponseEntity<String>("Developer not present",HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				}
+				else {
+					return new ResponseEntity<String>("No developers present",HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				
+			}
+			else {
+				return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>("Ticket Added Successfully ",HttpStatus.OK);
 	}
 	
 	

@@ -50,8 +50,6 @@ public class Bug {
 		this.project = project;
 	}
 
-
-
 	public int getBugId() {
 		return bugId;
 	}

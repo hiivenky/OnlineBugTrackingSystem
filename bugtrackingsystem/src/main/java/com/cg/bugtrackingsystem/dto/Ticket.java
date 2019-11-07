@@ -48,7 +48,7 @@ public class Ticket {
 	private LocalDateTime ticketDeadline;
 	
 	public Ticket() {
-		
+		ticketStatus="notAssigned";
 	}
 
 	public Ticket(int ticketId, String ticketNote, Developer assignedToEmployee, Employee assignedByManager,

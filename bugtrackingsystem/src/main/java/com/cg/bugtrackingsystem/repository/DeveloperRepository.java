@@ -6,6 +6,5 @@ import com.cg.bugtrackingsystem.dto.Developer;
 
 public interface DeveloperRepository extends JpaRepository<Developer,Integer> {
 	
-	
-
+	public Developer findByEmployeeId(Integer employeeId);
 }
