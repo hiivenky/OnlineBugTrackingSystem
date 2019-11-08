@@ -18,7 +18,7 @@ import com.cg.bugtrackingsystem.dto.Ticket;
 *last modified : 06/11/2019            
 */
 
-public interface ManagerService  {
+public interface ManagerService   {
 	
 	public Project addProject(Project project) throws Exception;
 	public Project endProject(Integer projectId);
