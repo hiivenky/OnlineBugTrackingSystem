@@ -61,19 +61,23 @@ public class ManagerServiceImpl implements ManagerService{
 			throw new BtsException("Project can not be null");
 		}
 		List<Project> projects = projectDao.findAll();
-		if(projects!=null) {
+		if(!projects.isEmpty()) {
+		
 		for(int i=0;i<projects.size();i++) {
 			if(projects.get(i).getProjectName().toLowerCase().equals(project.getProjectName().toLowerCase())) {
 				throw new BtsException("project already exists");
 			}
 		}
 		if(project.getProjectCost()<=100) {
+			System.out.println("cost excep");
 			throw new BtsException("project cost can not be less than 100");
 		}
 		if(project.getProjectEndDate().compareTo(LocalDate.now())<0) {
+			System.out.println("inside end date");
 			throw new BtsException("Invalid Project End Date");
 		}
 		}
+		System.out.println("outside all");
 		projectDao.save(project);
 		return project;
 	}
@@ -258,6 +262,7 @@ public class ManagerServiceImpl implements ManagerService{
 			}
 		}
 		employee.setRoles("ROLE_CUSTOMER");
+		employee.setUserPassword(bcryptEncoder.encode(employee.getUserPassword()));
 		developerDao.save(employee);
 		employee.setLoginname(employee.getEmployeeName()+employee.getEmployeeId());
 		developerDao.save(employee);
@@ -274,7 +279,7 @@ public class ManagerServiceImpl implements ManagerService{
 	*created Date: 07/11/2019
 	*last modified : 07/11/2019
 	*Input : Ticket Object
-	*Output : Ticket Object            
+	*Output : List<Developer>            
 	 * @throws BtsException 
 	*/
 	@Override

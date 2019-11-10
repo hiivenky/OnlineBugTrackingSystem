@@ -1,0 +1,17 @@
+<div class="container-fluid" style="margin-top:40px;">
+<div class="form-group">
+			
+  <div class="col-xs-12"><input  #n [ngClass]="{'form-control':'true' }" placeholder="bugDescription" type="text" [(ngModel)]="model.bugDescription" /></div>
+  <div   *ngIf="n.value.length>=4 && n.value.match('[a-zA-Z\\s]');else name"></div>
+  <ng-template #name ><p *ngIf="n.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">ProjectName must have atleat 4 charecters and not just numbers </p></ng-template>	        
+
+</div>
+<div class="form-group">
+			
+  <div class="col-xs-12"><input  #y [ngClass]="{'form-control':'true' }" placeholder="projectName" type="text" [(ngModel)]="model.projName" /></div>
+  <div   *ngIf="n.value.length>=4 && n.value.match('[a-zA-Z\\s]');else proj"></div>
+  <ng-template #proj ><p *ngIf="y.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">ProjectName must have atleat 4 charecters and not just numbers </p></ng-template>	        
+
+</div>
+<a (click)="addBug()" class="btn btn-primary">Add Bug</a>
+</div>

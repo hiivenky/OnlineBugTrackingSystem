@@ -1,6 +1,7 @@
 package com.cg.bugtrackingsystem.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,8 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -46,6 +53,17 @@ public class Ticket {
 	@Enumerated(EnumType.STRING)
 	private CriticalLevel ticketCriticalLevel;
 	private LocalDateTime ticketDeadline;
+	//audit trial details
+	@CreatedBy
+	protected String createdBy;
+	@CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+	protected Date creationDate;
+	@LastModifiedBy
+	protected String lastModifiedBy;
+	@LastModifiedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date lastModifiedDate;
 	
 	public Ticket() {
 		ticketStatus="notAssigned";

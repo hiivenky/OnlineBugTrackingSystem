@@ -1,6 +1,7 @@
 package com.cg.bugtrackingsystem.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -8,8 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -24,12 +31,23 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @Audited
 public class Manager extends Employee {
+	
 	@OneToMany(mappedBy = "manager",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private List<Project> projects;
 	@OneToMany(mappedBy = "manager",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private List<Developer>	developers;
 	@OneToMany(mappedBy = "assignedByManager",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private List<Ticket> tickets;
+	@CreatedBy
+	protected String createdBy;
+	@CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+	protected Date creationDate;
+	@LastModifiedBy
+	protected String lastModifiedBy;
+	@LastModifiedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date lastModifiedDate;
 	
 	
 	public Manager() {

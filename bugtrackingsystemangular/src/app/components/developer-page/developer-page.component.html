@@ -1,0 +1,45 @@
+<div class="wrapper">
+<nav id="sidebar">
+  <div class="sidebar-header shadow-lg p-3 mb-5 bg-cornflowerblue rounded" style="background-color: cornflowerblue;">
+      <h3>Hello {{loginName}}</h3>
+  </div>
+
+  <ul class="list-unstyled components">
+      <p>Actions</p>
+      <li >
+          <a (click)="compileButtonToggle()" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">editor</a>
+          <ul class="list-unstyled"  [hidden]="compilerToggle" id="homeSubmenu">
+            <li>
+                <a (click)="activateCompileProject()">Compile</a>
+            </li>
+              <li>
+                  <a (click)="activateViewProjects()">ViewProjects</a>
+              </li>
+              <li>
+                  <a href="#">Home 3</a>
+              </li>
+          </ul>
+      </li>
+      <li>
+          <a href="#">Ticket</a>
+      </li>
+      
+  </ul>
+</nav>
+<div id="content">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+         <h1>Capgemini</h1>
+    </div>
+</nav>
+<div>
+    <div class="container-fluid" *ngIf="compileBug">
+        <app-compile-bug ></app-compile-bug>  
+      </div>
+</div>
+
+</div>
+
+
+

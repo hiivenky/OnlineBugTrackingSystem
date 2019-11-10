@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.bugtrackingsystem.config.JwtTokenUtil;
 import com.cg.bugtrackingsystem.dto.SystemUserDetails;
+import com.cg.bugtrackingsystem.model.JwtRequest;
+import com.cg.bugtrackingsystem.model.JwtResponse;
+import com.cg.bugtrackingsystem.model.UserDto;
 import com.cg.bugtrackingsystem.service.JwtUserDetailsService;
-import com.cg.onlinewalletwithspringbootrest.model.JwtRequest;
-import com.cg.onlinewalletwithspringbootrest.model.JwtResponse;
-import com.cg.onlinewalletwithspringbootrest.model.UserDto;
 
 
 @RestController

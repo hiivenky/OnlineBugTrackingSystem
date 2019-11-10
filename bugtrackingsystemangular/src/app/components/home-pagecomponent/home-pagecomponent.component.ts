@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
+
 
 @Component({
   selector: 'app-home-pagecomponent',
@@ -6,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home-pagecomponent.component.css']
 })
 export class HomePagecomponentComponent implements OnInit {
+
+  @Input()
+  color: ThemePalette
 
   constructor() { }
 

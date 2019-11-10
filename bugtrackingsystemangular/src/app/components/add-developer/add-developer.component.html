@@ -1,0 +1,36 @@
+<h1>Developer Profile</h1>
+<div class="container-fluid" style="margin-left: 150px;margin-top:40px;">
+<div class="form-group">
+			
+    <div class="col-xs-12"><input  #n [ngClass]="{'form-control':'true' }" placeholder="UserName" type="text" [(ngModel)]="model.employeeName" /></div>
+    <div   *ngIf="n.value.length>=4 && n.value.match('[a-zA-Z\\s]{4,}');else name"></div>
+    <ng-template #name ><p *ngIf="n.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">UserName must have atleat 4 charecters and not just numbers </p></ng-template>	        
+       
+</div>
+<div class="form-group">
+<input #u [ngClass]="{'form-control':'true' }" placeholder="UserPassword" type="password" [(ngModel)]="model.userPassword"/>
+<div [ngStyle]="{'background-color':'green','color':'white'}"  *ngIf="u.value.length>=8;else password">Strong Password</div>
+<ng-template #password ><p *ngIf="u.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">Weak password</p></ng-template>
+</div>
+<div class="form-group">
+<input #p class="form-control" placeholder="Phone Number" [ngClass] type="string" [(ngModel)]="model.phoneNumber"/>
+<div   *ngIf="p.value.match('\\d{10}')&&p.value.length==10;else number"></div>
+<ng-template #number ><p *ngIf="p.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">Numbers must have 10 digits</p></ng-template>
+</div>
+<div class="form-group">
+    <input #m class="form-control" placeholder="emaild-id" [ngClass] type="string" [(ngModel)]="model.emailId"/>
+    <div   *ngIf="m.value.match('.{4,30}@[a-z]{3,7}\\.com');else mail"></div>
+    <ng-template #mail ><p *ngIf="m.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">Invalid mail Id</p></ng-template>
+</div>
+<div class="form-group"
+[ngStyle]="{}"><input class="form-control" #t placeholder="confirmpassword" type="password" (input)="confirmpassword=t.value"/>
+<div [ngStyle]="{'background-color':'red','color':'white'}"  *ngIf="(confirmpassword!=''&&confirmpassword!=model.userPassword)">
+        password and confirm password must be same
+</div>
+</div>        
+<div  class="form-group">  
+<input type="button" [disabled]="validate()" class="btn btn-success  btn-lg btn-block" value="Register" (click)="addDeveloper()"/>
+<div [ngStyle]="{'margin-top':'40px'}" [ngClass]="{'alert alert-primary':registrationStatus.length!=0}" >{{registrationStatus}}
+</div>
+</div>
+</div>

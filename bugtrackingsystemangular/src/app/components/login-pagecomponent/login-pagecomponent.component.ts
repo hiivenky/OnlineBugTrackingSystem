@@ -41,8 +41,12 @@ export class LoginPagecomponentComponent implements OnInit {
     this.role = this.authService.getUserRole(username).
     subscribe((data)=>{
     this.role=data;
-    alert("before admin role")
-    alert(this.role["token"])
+    if(this.role["token"]==='ROLE_ADMIN'){
+      this.router.navigate(['adminPage'])
+    }
+    else if(this.role["token"]==='ROLE_CUSTOMER'){
+      this.router.navigate(['developerPage']);
+    }
     return data 
     },(error)=>{
       alert(error.error)

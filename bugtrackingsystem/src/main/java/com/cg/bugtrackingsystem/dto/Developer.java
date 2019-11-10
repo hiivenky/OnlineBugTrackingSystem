@@ -1,5 +1,7 @@
 package com.cg.bugtrackingsystem.dto;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -7,8 +9,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -30,10 +38,21 @@ public class Developer extends Employee {
 	@JoinColumn
 	private Manager manager;
 	private boolean assignStatus;
+	@CreatedBy
+	protected String createdBy;
+	@CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+	protected Date creationDate;
+	@LastModifiedBy
+	protected String lastModifiedBy;
+	@LastModifiedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date lastModifiedDate;
 	
 	
 	public Developer() {
 		super();
+		this.assignStatus=false;
 	}
 
 	public Developer(Ticket ticketAssigned, Manager manager, boolean assignStatus) {

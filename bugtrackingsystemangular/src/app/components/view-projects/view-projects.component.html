@@ -1,0 +1,34 @@
+
+  <div class="container" style="margin-left:150px;background-color: cyan;margin-top: 10px;">
+    <div class="row" *ngFor="let project of projects" style="margin-top: 20px;">
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Active</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="activateAddBug()">Add Bug</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{project.projectName}}</h5>
+            <p class="card-text"><b>Project Status:</b>{{project.projectStatus}} </p>
+            <p class="card-text"><b>Project Cost:</b>{{project.projectCost}} </p>
+            <p class="card-text"><b>Project projectEndDate:</b>{{project.projectEndDate}} </p>
+          </div>
+          <div class="card-body">
+            <div class="container-fluid">
+              <app-add-bug *ngIf="addBug"></app-add-bug>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

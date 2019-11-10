@@ -2,6 +2,7 @@ package com.cg.bugtrackingsystem.dto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,10 +16,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import com.fasterxml.jackson.annotation.JacksonAnnotation;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  *author: Venkatesh
@@ -44,6 +54,16 @@ public class Project {
 	private String projectStatus;
 	@OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Bug> bugs;
+	@CreatedBy
+	protected String createdBy;
+	@CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+	protected Date creationDate;
+	@LastModifiedBy
+	protected String lastModifiedBy;
+	@LastModifiedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date lastModifiedDate;
 	
 	
 	public Project() {

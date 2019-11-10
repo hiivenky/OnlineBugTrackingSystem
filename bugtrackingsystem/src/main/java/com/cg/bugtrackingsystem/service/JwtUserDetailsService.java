@@ -5,8 +5,7 @@ import com.cg.bugtrackingsystem.dto.Employee;
 import com.cg.bugtrackingsystem.dto.Manager;
 import com.cg.bugtrackingsystem.dto.SystemUserDetails;
 import com.cg.bugtrackingsystem.exception.BtsException;
-import com.cg.onlinewalletwithspringbootrest.model.UserDto;
-
+import com.cg.bugtrackingsystem.model.UserDto;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

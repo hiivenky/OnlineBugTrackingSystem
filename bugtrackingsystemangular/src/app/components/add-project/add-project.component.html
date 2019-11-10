@@ -1,0 +1,27 @@
+
+<h1>We value your trust</h1>
+		<p [ngStyle]="{'color':'white'}" class="hint-text">Add project form</p>
+        <div class="form-group">
+			
+                <div class="col-xs-12"><input  #n [ngClass]="{'form-control':'true' }" placeholder="projectName" type="text" [(ngModel)]="model.projName" /></div>
+                <div   *ngIf="n.value.length>=4 && n.value.match('[a-zA-Z\\s]');else name"></div>
+                <ng-template #name ><p *ngIf="n.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">ProjectName must have atleat 4 charecters and not just numbers </p></ng-template>	        
+		       	
+        </div>
+        <div class="form-group">
+        	<input #u [ngClass]="{'form-control':'true' }" placeholder="project Cost" type="number" [(ngModel)]="model.projCost"/>
+            <div  *ngIf="u.value>=1000;else password"></div>
+            <ng-template #password ><p *ngIf="u.value.length!=0 " [ngStyle]="{'background-color':'red','color':'white'}">We serve Projects that are atleast greater than 1000</p></ng-template>
+        </div>
+		<div class="form-group"
+            [ngStyle]="{}"><input class="form-control" #t placeholder="dateFormat" type="date" #d data-date-format="YYYY/MM/DD" />
+            <div [ngStyle]="{'background-color':'red','color':'white'}"  *ngIf="">
+                   
+            </div>
+        </div>        
+		<div  class="form-group">  
+            <input type="button" [disabled]="validate()" class="btn btn-success  btn-lg btn-block" value="Add Project" (click)="addProject(d.value)"/>
+            <div [ngStyle]="{'margin-top':'40px'}" [ngClass]="{'alert alert-primary':registrationStatus.length!=0}" >{{registrationStatus}}
+            </div>
+        </div>
+
