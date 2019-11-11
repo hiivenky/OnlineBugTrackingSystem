@@ -1,5 +1,6 @@
 package com.cg.bugtrackingsystem.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +36,14 @@ import com.cg.bugtrackingsystem.repository.ProjectRepository;
 import com.cg.bugtrackingsystem.service.DeveloperService;
 import com.cg.bugtrackingsystem.service.EmployeeService;
 import com.cg.bugtrackingsystem.service.ManagerService;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sun.net.httpserver.HttpsServer;
 import com.cg.bugtrackingsystem.model.JwtResponse;
 
 /**
@@ -72,7 +81,7 @@ public class BugTrackingSystemController {
 			if(authentication.isAuthenticated()) {
 				SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
 				manager = (Manager)employeeService.getUser(userDetails.getUsername());
-				logger.trace("manager "+manager.getLoginname()+" adding project");
+				logger.info("manager "+manager.getLoginname()+" adding project");
 				System.out.println(manager.getEmailId());
 			}
 			else {
@@ -155,6 +164,27 @@ public class BugTrackingSystemController {
 				manager = (Manager)employeeService.getUser(userDetails.getUsername());
 				developer.setManager(manager);
 				managerService.addEmployee(developer);
+				Email from = new Email("test@example.com");
+			    String subject = "Sending with SendGrid is Fun";
+			    Email to = new Email("test@example.com");
+			    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+			    Mail mail = new Mail(from, subject, to, content);
+			    System.out.println(System.getenv("SENDGRID_API_KEY"));
+			    SendGrid sg = new SendGrid("SENDGRID_API_KEY");
+			    Request request = new Request();
+			    try {
+			      request.setMethod(Method.POST);
+			      request.setEndpoint("mail/send");
+			      request.setBody(mail.build());
+			      Response response = sg.api(request);
+			      System.out.println(response.getStatusCode());
+			      System.out.println(response.getBody());
+			      System.out.println(response.getHeaders());
+			      System.out.println("sent");
+			    } catch (IOException ex) {
+			    	System.out.println(ex.getMessage());
+			      throw ex;
+			    }
 				logger.trace("manager "+manager.getLoginname()+" added developer "+developer.getLoginname());
 			}
 			else {
@@ -177,19 +207,34 @@ public class BugTrackingSystemController {
 	@PostMapping(value="manager/raiseTicket")
 	public ResponseEntity<String> raiseTicket(@ModelAttribute Ticket ticket,@RequestParam("deadLine")String deadLine,
 			@RequestParam("bugId")Integer bugId,@RequestParam("developerId")Integer developerId,Authentication authentication){
+		System.out.println("Inside raise ticket");
 		Manager manager;
 		boolean present = false;
+		boolean bugPresent=false;
 		try {
 			if(authentication.isAuthenticated()) {
 				SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
 				manager = (Manager)employeeService.getUser(userDetails.getUsername());
 				ticket.setAssignedByManager(manager);
+				deadLine=deadLine.replace("T", " ");
 				ticket.setTicketDeadline(LocalDateTime.parse(deadLine,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
 				List<Project> projects = manager.getProjects();
 				if(projects==null) {
 					return new ResponseEntity<String>("Projects not present create project first",HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
-				
+				for(int i=0;i<projects.size();i++) {
+					List<Bug> bugs = projects.get(i).getBugs();
+					for(int j=0;j<bugs.size();j++) {
+						if(bugs.get(j).getBugId()==bugId) {
+							bugPresent=true;
+							break;
+						}
+					}
+				}
+				if(!bugPresent) {
+					logger.trace("wrong bug id entered by manager "+manager.getLoginname());
+					return new ResponseEntity<String>("Invalid bug Id",HttpStatus.INTERNAL_SERVER_ERROR);
+				}
 				List<Developer> developers = manager.getDevelopers();
 				if(developers!=null) {
 					for(int i=0;i<developers.size();i++) {
@@ -264,6 +309,7 @@ public class BugTrackingSystemController {
 					ret.get(i).setBugs(null);
 					ret.get(i).setManager(null);
 				}
+				
 				logger.trace("projects are viewed by "+manager.getLoginname());
 				return new ResponseEntity<List<Project>>(ret,HttpStatus.OK);
 			}
@@ -311,9 +357,14 @@ public class BugTrackingSystemController {
 		
 		if(code!=null) {
 			try {
-				DiagnosticCollector<JavaFileObject> errors=developerService.compile(code);
+				List<String> errors=developerService.compile(code);
 				logger.trace("compiling ......");
-				return new ResponseEntity<DiagnosticCollector<JavaFileObject>>(errors,HttpStatus.OK);
+				if(errors!=null) {
+					return new ResponseEntity<List<String>>(errors,HttpStatus.OK);
+				}
+				else {
+					return new ResponseEntity<String>("compilation successfull",HttpStatus.OK);
+				}
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 				return new ResponseEntity<String>("compiler error",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -321,6 +372,40 @@ public class BugTrackingSystemController {
 		}
 		return new ResponseEntity<String>("please type the code",HttpStatus.INTERNAL_SERVER_ERROR);
 		
+	}
+	@GetMapping(value="/getTicket")
+	public ResponseEntity<?> getTicket(Authentication authentication){
+		Developer developer;
+		if(authentication.isAuthenticated()) {
+			SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
+			developer = (Developer)employeeService.getUser(userDetails.getUsername());
+			if(developer.isAssignStatus()) {
+				return  ResponseEntity.ok(new JwtResponse(developer.getTicketAssigned().getCodeSnippet()));
+			}
+			else {
+				return new ResponseEntity<String>("",HttpStatus.OK);
+			}
+		}
+		else {
+			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	@PostMapping(value="/submit")
+	public ResponseEntity<?> submit(@RequestParam("finalCode") String code ,Authentication authentication){
+		Developer developer;
+		System.out.println("inside submit controller");
+		if(authentication.isAuthenticated()) {
+			SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
+			developer = (Developer)employeeService.getUser(userDetails.getUsername());
+			Ticket ticketAssigned = developer.getTicketAssigned();
+			int id=ticketAssigned.getBug().getBugId();
+			developerService.submit(id,developer.getEmployeeId(),code);
+			return new ResponseEntity<String>("code submitted successfully",HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	

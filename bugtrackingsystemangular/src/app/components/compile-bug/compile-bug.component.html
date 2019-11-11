@@ -1,5 +1,11 @@
 <div class="form-group">
 <textarea type="string" [(ngModel)]="model.code" rows="10" cols="80" id="TITLE" type="text">
 </textarea>
-<a (click)="compile()" class="btn btn-primary">Compile</a>
+<input type="button" (click)="compile()" [disabled]="assigned" class="btn btn-primary" value="Compile" />
+</div>
+
+
+
+<div  *ngFor="let error of errors">
+    <p style="color:red;" >{{error}}</p>
 </div>

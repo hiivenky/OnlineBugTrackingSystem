@@ -29,7 +29,7 @@
                     <a (click)="activateAddDeveloper()">AddDeveloper</a>
                 </li>
                 <li >
-                    <a (click)="activateGetDevelopers()">ViewDeveloper</a>
+                    <a (click)="activateGetDevelopers()">ViewDevelopers</a>
                 </li>
                   <li>
                       <a href="#">Page 3</a>
@@ -37,7 +37,7 @@
               </ul>
           </li>
           <li>
-              <a href="#">Ticket</a>
+                <a (click)="activateRaiseTicket()">RaiseTicket</a>
           </li>
           
       </ul>
@@ -64,6 +64,9 @@
             </div>
             <div class="container-fluid">
                 <app-get-developers *ngIf="getDevelopers"></app-get-developers>  
+            </div>
+            <div class="container-fluid">
+                <app-raise-ticket *ngIf="raiseTicket"></app-raise-ticket>  
             </div>
     </div>
 

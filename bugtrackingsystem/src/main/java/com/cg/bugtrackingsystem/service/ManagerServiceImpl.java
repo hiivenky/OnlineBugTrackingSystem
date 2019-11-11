@@ -1,5 +1,6 @@
 package com.cg.bugtrackingsystem.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,13 @@ import com.cg.bugtrackingsystem.repository.EmployeeRepository;
 import com.cg.bugtrackingsystem.repository.ManagerRepository;
 import com.cg.bugtrackingsystem.repository.ProjectRepository;
 import com.cg.bugtrackingsystem.repository.TicketRepository;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
 /**
 *author: Venkatesh
@@ -210,6 +218,27 @@ public class ManagerServiceImpl implements ManagerService{
 			developer.setTicketAssigned(ticket);
 			bugDao.save(bug);
 			developerDao.save(developer);
+			Email from = new Email("venkymullagiri@gmail.com");
+		    String subject = "Ticket has been assigned review the bug as early as possible";
+		    Email to = new Email(developer.getEmailId());
+		    Content content = new Content("text/plain", "ticket has been assigned by "+developer.getManager().getLoginname()
+		    		+"bug id is ");
+		    Mail mail = new Mail(from, subject, to, content);
+		    System.out.println(System.getenv("SENDGRID_API_KEY"));
+		    SendGrid sg = new SendGrid("");
+		    Request request = new Request();
+		    try {
+		      request.setMethod(Method.POST);
+		      request.setEndpoint("mail/send");
+		      request.setBody(mail.build());
+		      Response response = sg.api(request);
+		      System.out.println(response.getStatusCode());
+		      System.out.println(response.getBody());
+		      System.out.println(response.getHeaders());
+		      System.out.println("sent");
+		    } catch (IOException ex) {
+		    	System.out.println(ex.getMessage());
+		    }
 		}
 		else {
 			throw new BtsException("Bug is already assigned to a developer");
@@ -266,6 +295,26 @@ public class ManagerServiceImpl implements ManagerService{
 		developerDao.save(employee);
 		employee.setLoginname(employee.getEmployeeName()+employee.getEmployeeId());
 		developerDao.save(employee);
+		Email from = new Email("venkymullagiri@gmail.com");
+	    String subject = "Sending with SendGrid is Fun";
+	    Email to = new Email(employee.getEmailId());
+	    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+	    Mail mail = new Mail(from, subject, to, content);
+	    System.out.println(System.getenv("SENDGRID_API_KEY"));
+	    SendGrid sg = new SendGrid("");
+	    Request request = new Request();
+	    try {
+	      request.setMethod(Method.POST);
+	      request.setEndpoint("mail/send");
+	      request.setBody(mail.build());
+	      Response response = sg.api(request);
+	      System.out.println(response.getStatusCode());
+	      System.out.println(response.getBody());
+	      System.out.println(response.getHeaders());
+	      System.out.println("sent");
+	    } catch (IOException ex) {
+	    	System.out.println(ex.getMessage());
+	    }
 		return employee;
 	}
 	
@@ -281,9 +330,11 @@ public class ManagerServiceImpl implements ManagerService{
 	*Input : Ticket Object
 	*Output : List<Developer>            
 	 * @throws BtsException 
+	 * @throws IOException 
 	*/
 	@Override
-	public List<Developer> getDevelopers(Integer managerId) throws BtsException {
+	public List<Developer> getDevelopers(Integer managerId) throws BtsException, IOException {
+		
 		Manager manager = managerDao.findByEmployeeId(managerId);
 		if(manager==null) {
 			throw new BtsException("Invalid manager Id");

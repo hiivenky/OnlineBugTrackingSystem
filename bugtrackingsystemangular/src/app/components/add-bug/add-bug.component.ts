@@ -9,6 +9,7 @@ import { ManagerService } from 'src/app/services/manager.service';
 export class AddBugComponent implements OnInit {
 
   model:any={}
+  data2=2;
 
   constructor(private managerService:ManagerService) { 
   }
@@ -17,7 +18,7 @@ export class AddBugComponent implements OnInit {
   }
 
   addBug(){
-    this.managerService.addBug(this.model).subscribe(
+    this.managerService.addBug(this.model,this.data2).subscribe(
       (data)=>{
         alert(data);
       },

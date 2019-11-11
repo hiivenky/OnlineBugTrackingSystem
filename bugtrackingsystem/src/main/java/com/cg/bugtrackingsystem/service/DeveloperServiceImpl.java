@@ -2,7 +2,9 @@ package com.cg.bugtrackingsystem.service;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.tools.Diagnostic;
@@ -13,7 +15,15 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cg.bugtrackingsystem.dto.Bug;
+import com.cg.bugtrackingsystem.dto.Developer;
+import com.cg.bugtrackingsystem.dto.Ticket;
+import com.cg.bugtrackingsystem.repository.BugRepository;
+import com.cg.bugtrackingsystem.repository.DeveloperRepository;
+import com.cg.bugtrackingsystem.repository.TicketRepository;
 
 
 /**
@@ -24,10 +34,34 @@ import org.springframework.stereotype.Service;
  */
 @Service("DeveloperService")
 public class DeveloperServiceImpl implements DeveloperService {
-
+	@Autowired
+	BugRepository bugDao;
+	@Autowired
+	DeveloperRepository developerDao;
+	@Autowired
+	TicketRepository ticketDao;
+	/**
+	 *author: Venkatesh
+	 *Description : This method is used for submitting the code 
+	 *created Date: 11/11/2019
+	 *last modified : 11/11/2019     
+	 *Input : bugId,developerId,code
+	 *Output : boolean         
+	 */
 	@Override
-	public boolean submit() {
-		
+	public boolean submit(int bugId,int developerId,String code) {
+		System.out.println("Inside submit");
+		Bug bug = bugDao.findBybugId(bugId);
+		Ticket ticket = bug.getTicket();
+		ticket.setCodeSnippet(code);
+		ticket.setTicketStatus("completed");
+		bug.setBugStatus("completed");
+		Developer developer = developerDao.findByEmployeeId(developerId);
+		developer.setAssignStatus(false);
+		developer.setTicketAssigned(null);
+		bugDao.save(bug);
+		developerDao.save(developer);
+		ticketDao.save(ticket);
 		return false;
 	}
 	/**
@@ -39,7 +73,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 	 *Output : ResponseEntity         
 	 */
 	@Override
-	public DiagnosticCollector<JavaFileObject> compile(String code) {
+	public List<String> compile(String code) {
 		System.out.println(code);
 		
 		SimpleJavaFileObject fileObject = new SampleSource("com.test.Test",code);
@@ -62,6 +96,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 	        boolean status = task.call();
 	        //String args1[] = buildCompileJavacArgs(srcFiles);
 	        System.out.println("status"+status);
+	        List<String> bugs= new ArrayList<String>();
 	        if(!status)
 	        {
 	            System.out.println("Found errors in compilation");
@@ -69,17 +104,22 @@ public class DeveloperServiceImpl implements DeveloperService {
 	            for(Diagnostic diagnostic : diagnostics.getDiagnostics())
 	            {
 	                printError(errors, diagnostic);
+	                bugs.add(diagnostic.getKind()+"  : "+errors+" Type : "+diagnostic.getMessage(Locale.getDefault()));
+	                bugs.add(diagnostic.getColumnNumber()+"");
+	                bugs.add(diagnostic.getSource()+"");
 	                errors++;
 	            }
 	        }
-	        else
-	            System.out.println("Compilation sucessfull");
-	        
+	        else {
+	        	bugs.add("Compilation sucessfull");
+	        	System.out.println("Compilation sucessfull");
+	        	return bugs;
+	        }
 	        try
 	        {
 	            fileManager.close();
 	        } catch (IOException e){}
-		return null;
+		return bugs;
 	}
 	public static void printError(int number,Diagnostic diagnostic)
     {

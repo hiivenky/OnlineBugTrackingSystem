@@ -10,6 +10,8 @@ export class DeveloperPageComponent implements OnInit {
 
   model:any={}
 
+  loginName='';
+
   compilerToggle=true;
 
   compileBug=false;
@@ -17,6 +19,7 @@ export class DeveloperPageComponent implements OnInit {
   constructor(private developerService:DeveloperService) { }
 
   ngOnInit() {
+    this.loginName=sessionStorage.getItem('username');
   }
 
   compileButtonToggle(){

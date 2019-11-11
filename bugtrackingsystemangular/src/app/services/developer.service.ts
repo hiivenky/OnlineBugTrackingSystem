@@ -17,4 +17,14 @@ export class DeveloperService {
     form.append("code", data.code);
     return this.myhttp.post("http://localhost:9050/compile", form, { headers: this.headers });
   }
+  getTicket(){
+    return this.myhttp.get("http://localhost:9050/getTicket",{ headers: this.headers });
+  }
+  submit(finalCodeSnippet){
+    let form = new FormData();
+    //  alert("inside service"+startDate)
+    alert("submitting "+finalCodeSnippet)
+    form.append("finalCode", finalCodeSnippet);
+    return this.myhttp.post("http://localhost:9050/submit",form,{ headers: this.headers });
+  }
 }

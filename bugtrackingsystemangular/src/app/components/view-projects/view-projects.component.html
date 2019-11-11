@@ -9,7 +9,7 @@
                 <a class="nav-link active" href="#">Active</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" (click)="activateAddBug()">Add Bug</a>
+                <a class="nav-link" >Add Bug</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -21,11 +21,14 @@
             <p class="card-text"><b>Project Status:</b>{{project.projectStatus}} </p>
             <p class="card-text"><b>Project Cost:</b>{{project.projectCost}} </p>
             <p class="card-text"><b>Project projectEndDate:</b>{{project.projectEndDate}} </p>
+            <a (click)="activateAddBug()" class="btn btn-primary">Add Bug</a>
           </div>
           <div class="card-body">
-            <div class="container-fluid">
-              <app-add-bug *ngIf="addBug"></app-add-bug>
-            </div>
+              <div class="container-fluid" [hidden]="addBug">
+                  <input #d type="text" placeholder="bug description" /><br>
+                  <input #p type="text" placeholder="project Name" [value]="project.projectName" disabled /><br>
+                  <a (click)="addBugToProject(d.value,p.value)" class="btn btn-primary">Add</a>
+                </div>
           </div>
         </div>
       </div>

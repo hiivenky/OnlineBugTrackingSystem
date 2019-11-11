@@ -1,5 +1,7 @@
 package com.cg.bugtrackingsystem.service;
 
+import java.util.List;
+
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 /**
@@ -9,6 +11,6 @@ import javax.tools.JavaFileObject;
  *last modified : 10/11/2019     
  */
 public interface DeveloperService {
-	public boolean submit();
-	public DiagnosticCollector<JavaFileObject> compile(String code);
+	public boolean submit(int bugId,int developerId,String code);
+	public List<String> compile(String code);
 }

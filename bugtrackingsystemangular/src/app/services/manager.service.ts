@@ -37,15 +37,26 @@ export class ManagerService {
     return this.myhttp.get("http://localhost:9050/getProjects", { headers: this.headers });
   }
 
-  addBug(data: any) {
+  addBug(data1,data2) {
     let form = new FormData();
     //  alert("inside service"+startDate)
-    form.append("bugDescription", data.bugDescription);
-    form.append("projectName", data.projName)
+    form.append("bugDescription", data1);
+    form.append("projectName", data2)
     return this.myhttp.post("http://localhost:9050/manager/addBug", form, { headers: this.headers });
   }
 
   getDevelopers(){
     return this.myhttp.get("http://localhost:9050/getDevelopers", { headers: this.headers });
+  }
+  raiseTicket(model,data,bug,dev){
+    let form = new FormData();
+    //  alert("inside service"+startDate)
+    form.append("ticketNote", model.ticketNote);
+    form.append("codeSnippet",model.codeSnippet);
+    form.append("ticketCriticalLevel",model.criticalLevel);
+    form.append("deadLine",data);
+    form.append("bugId",bug);
+    form.append("developerId",dev);
+    return this.myhttp.post("http://localhost:9050/manager/raiseTicket", form, { headers: this.headers });
   }
 } 

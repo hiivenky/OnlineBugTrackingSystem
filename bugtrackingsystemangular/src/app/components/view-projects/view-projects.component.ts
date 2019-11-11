@@ -9,7 +9,7 @@ import { ManagerService } from 'src/app/services/manager.service';
 export class ViewProjectsComponent implements OnInit {
 
   projects:any=[];
-  addBug=false;
+  addBug=true;
 
   constructor(private managerService:ManagerService) { 
     this.managerService.viewProjects().subscribe(
@@ -27,7 +27,18 @@ export class ViewProjectsComponent implements OnInit {
     
   }
   activateAddBug(){
-    this.addBug=true;
+    this.addBug=false;
+  }
+  addBugToProject(data1,data2){
+    alert(data1)
+    this.managerService.addBug(data1,data2).subscribe(
+      (data)=>{
+        alert(data);
+      },
+      (error)=>{
+        alert(error.error)
+      }
+    )
   }
 
 }

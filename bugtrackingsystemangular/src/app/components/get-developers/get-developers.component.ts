@@ -28,5 +28,6 @@ export class GetDevelopersComponent implements OnInit {
     this.managerService.getDevelopers()
   }
 
+ 
 
 }
