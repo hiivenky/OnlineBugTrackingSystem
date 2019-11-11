@@ -14,7 +14,6 @@ export class ViewProjectsComponent implements OnInit {
   constructor(private managerService:ManagerService) { 
     this.managerService.viewProjects().subscribe(
       (data)=>{
-        alert(data)
         this.projects=data;
       },
       (error)=>{

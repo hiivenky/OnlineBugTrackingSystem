@@ -17,6 +17,7 @@ export class AdminPageComponent implements OnInit {
   getDevelopers=false;
   raiseTicket=false;
   developerToggle=true;
+  viewBugs=true;
 
   constructor() { 
   }
@@ -25,6 +26,7 @@ export class AdminPageComponent implements OnInit {
     this.loginName = sessionStorage.getItem("username");
   }
   activateAddDeveloper(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addProject=false;
@@ -33,6 +35,7 @@ export class AdminPageComponent implements OnInit {
     this.getDevelopers=false;
   }
   activateAddProject(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addDeveloper=false;
@@ -41,6 +44,7 @@ export class AdminPageComponent implements OnInit {
     this.getDevelopers=false;
   }
   activateAddBug(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addDeveloper=false;
@@ -49,6 +53,7 @@ export class AdminPageComponent implements OnInit {
     this.getDevelopers=false;
   }
   projectButtonToggle(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addProject=false;
@@ -58,6 +63,7 @@ export class AdminPageComponent implements OnInit {
     this.projectToggle=!this.projectToggle;
   }
   activateViewProjects(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=true;
     this.addProject=false;
@@ -67,6 +73,7 @@ export class AdminPageComponent implements OnInit {
   }
 
   activateGetDevelopers(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addProject=false;
@@ -76,6 +83,7 @@ export class AdminPageComponent implements OnInit {
 
   }
   developerButtonToggle(){
+    this.viewBugs=false;
     this.raiseTicket=false;
     this.viewProjects=false;
     this.addProject=false;
@@ -85,12 +93,22 @@ export class AdminPageComponent implements OnInit {
     this.developerToggle=!this.developerToggle;
   }
   activateRaiseTicket(){
+    this.viewBugs=false;
     this.raiseTicket=true;
     this.viewProjects=false;
     this.addProject=false;
     this.addBug=false;
     this.addDeveloper=false;
     this.getDevelopers=false;
+  }
+  activateViewBugs(){
+    this.raiseTicket=false;
+    this.viewProjects=false;
+    this.addProject=false;
+    this.addBug=false;
+    this.addDeveloper=false;
+    this.getDevelopers=false;
+    this.viewBugs=true;
   }
 
 }

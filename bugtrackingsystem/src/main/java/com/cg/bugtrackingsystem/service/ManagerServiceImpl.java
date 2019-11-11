@@ -344,7 +344,6 @@ public class ManagerServiceImpl implements ManagerService{
 			throw new BtsException("No developer present");
 		}
 		return developers;
-	}	
-	
+	}
 
 }

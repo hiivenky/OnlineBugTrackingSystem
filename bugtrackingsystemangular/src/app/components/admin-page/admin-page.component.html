@@ -39,18 +39,19 @@
           <li>
                 <a (click)="activateRaiseTicket()">RaiseTicket</a>
           </li>
+          <li>
+                <a (click)="activateViewBugs()">ViewBugs</a>
+          </li>
           
       </ul>
   </nav>
   <div id="content">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-             <h1>Capgemini</h1>
-        </div>
+
     </nav>
-    <div>
-        <div class="container-fluid">
+    <div >
+          <div class="container-fluid">
             <app-add-developer *ngIf="addDeveloper"></app-add-developer>  
           </div>
           <div class="container-fluid">
@@ -67,6 +68,9 @@
             </div>
             <div class="container-fluid">
                 <app-raise-ticket *ngIf="raiseTicket"></app-raise-ticket>  
+            </div>
+            <div class="container-fluid">
+                <app-view-bugs *ngIf="viewBugs"></app-view-bugs>  
             </div>
     </div>
 

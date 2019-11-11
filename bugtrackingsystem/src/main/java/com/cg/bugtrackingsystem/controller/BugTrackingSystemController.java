@@ -1,5 +1,6 @@
 package com.cg.bugtrackingsystem.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +14,11 @@ import javax.tools.JavaFileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +38,8 @@ import com.cg.bugtrackingsystem.dto.Manager;
 import com.cg.bugtrackingsystem.dto.Project;
 import com.cg.bugtrackingsystem.dto.SystemUserDetails;
 import com.cg.bugtrackingsystem.dto.Ticket;
+import com.cg.bugtrackingsystem.filesystem.GeneratePdf;
+import com.cg.bugtrackingsystem.repository.BugRepository;
 import com.cg.bugtrackingsystem.repository.ProjectRepository;
 import com.cg.bugtrackingsystem.service.DeveloperService;
 import com.cg.bugtrackingsystem.service.EmployeeService;
@@ -62,6 +70,8 @@ public class BugTrackingSystemController {
 	private EmployeeService employeeService;
 	@Autowired
 	private DeveloperService developerService;
+	@Autowired
+	BugRepository bugDao ;
 	private static final Logger logger = LoggerFactory.getLogger(BugTrackingSystemController.class);
 	
 	/**
@@ -375,6 +385,7 @@ public class BugTrackingSystemController {
 	}
 	@GetMapping(value="/getTicket")
 	public ResponseEntity<?> getTicket(Authentication authentication){
+		System.out.println();
 		Developer developer;
 		if(authentication.isAuthenticated()) {
 			SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
@@ -407,8 +418,84 @@ public class BugTrackingSystemController {
 			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	
+	@GetMapping(value="/getBugs")
+	public ResponseEntity<?> getBugs(Authentication authentication){
+		System.out.println("Inside get Bugs");
+		class RetBug{
+			Integer id;
+			String bugDescription;
+			String projectName;
+			String assignStatus;
+			public Integer getId() {
+				return id;
+			}
+			public void setId(Integer id) {
+				this.id = id;
+			}
+			public String getBugDescription() {
+				return bugDescription;
+			}
+			public void setBugDescription(String bugDescription) {
+				this.bugDescription = bugDescription;
+			}
+			public String getProjectName() {
+				return projectName;
+			}
+			public void setProjectName(String projectName) {
+				this.projectName = projectName;
+			}
+			public String getAssignStatus() {
+				return assignStatus;
+			}
+			public void setAssignStatus(String assignStatus) {
+				this.assignStatus = assignStatus;
+			}
+			
+			
+		}
+		Manager manager;
+		List<RetBug> toReturn = new ArrayList<RetBug>();
+		if(authentication.isAuthenticated()) {
+			SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
+			manager = (Manager)employeeService.getUser(userDetails.getUsername());
+			List<Project> projects = manager.getProjects();
+			for(int i=0;i<projects.size();i++) {
+				List<Bug> bugs = projects.get(i).getBugs();
+				System.out.println(i+""+bugs.size());
+				for(int j=0;j<bugs.size();j++) {
+					RetBug retBug = new RetBug();
+					retBug.setAssignStatus(bugs.get(j).getBugStatus());
+					System.out.println(bugs.get(j).getBugDescription());
+					retBug.setBugDescription(bugs.get(j).getBugDescription());
+					retBug.setId(bugs.get(j).getBugId());
+					retBug.setProjectName(bugs.get(j).getProject().getProjectName());
+					toReturn.add(retBug);
+					
+				}
+			}
+			System.out.println(toReturn.get(2).getBugDescription());
+			return new ResponseEntity<List<RetBug>>(toReturn,HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@RequestMapping(value = "/pdfreport", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<InputStreamResource> getCode(@RequestParam("bugId") int id){
+		System.out.println("Inside report");
+		logger.trace("generate pdf requested");
+		Bug bug = bugDao.findBybugId(id);
+		System.out.println(bug.getTicket().getCodeSnippet());
+		 ByteArrayInputStream bis = GeneratePdf.getCodeSnippet(bug.getTicket().getCodeSnippet());
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.add("Content-Disposition", "inline; filename=finalcode.pdf");
+	        logger.info("PDF Generated.. returning file..");
+	        return ResponseEntity
+	                .ok()
+	                .headers(headers)
+	                .contentType(MediaType.APPLICATION_PDF)
+	                .body(new InputStreamResource(bis));
+	}
 
 }

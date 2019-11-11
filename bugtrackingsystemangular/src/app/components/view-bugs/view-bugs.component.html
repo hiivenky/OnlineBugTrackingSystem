@@ -1,0 +1,35 @@
+<div class="container" style="margin-left:150px;background-color: cyan;margin-top: 10px;">
+    <div class="row" *ngFor="let bug of bugs" style="margin-top: 20px;">
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Active</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" >Add Bug</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+              <h5 class="card-title">bug Id {{bug.id}}</h5>
+              <p class="card-text"><b>Bug Description:</b>{{bug.bugDescription}} </p>
+              <p class="card-text"><b>Project Name:</b>{{bug.projectName}} </p>
+              <p class="card-text"><b>Bug Status:</b>{{bug.assignStatus}} </p>
+            <a (click)="activateAddBug(bug.id)" class="btn btn-primary">Add Bug</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+
+
+    
+  

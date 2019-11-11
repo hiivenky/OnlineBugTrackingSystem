@@ -34,6 +34,8 @@ import { GetDevelopersComponent } from './components/get-developers/get-develope
 import { DeveloperPageComponent } from './components/developer-page/developer-page.component'
 ;
 import { CompileBugComponent } from './components/compile-bug/compile-bug.component'
+;
+import { ViewBugsComponent } from './components/view-bugs/view-bugs.component'
 const myroute:Routes=[
     {path:'homePage',component:HomePagecomponentComponent},
     {path:'login',component:LoginPagecomponentComponent},
@@ -69,7 +71,8 @@ const myroute:Routes=[
         GetDevelopersComponent,
         RaiseTicketComponent,
         DeveloperPageComponent,
-        CompileBugComponent],
+        CompileBugComponent,
+        ViewBugsComponent],
     providers: [],
     bootstrap: [AppComponent]
 })

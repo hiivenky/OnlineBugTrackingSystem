@@ -19,7 +19,7 @@
     <div class="col-xs-12"><input   [ngClass]="{'form-control':'true' }" #bug placeholder="bug id" type="text"  /></div>        
 </div>       
 <div  class="form-group">  
-<input type="button"  class="btn btn-success  btn-lg btn-block" value="Add Project" (click)="raiseTicket(d.value,bug.value,dev.value)"/>
+<input type="button"  class="btn btn-success  btn-lg btn-block" value="Raise Ticket" (click)="raiseTicket(d.value,bug.value,dev.value)"/>
 <div [ngStyle]="{'margin-top':'40px'}" [ngClass]="{'alert alert-primary':registrationStatus.length!=0}" >{{registrationStatus}}
 </div>
 </div>

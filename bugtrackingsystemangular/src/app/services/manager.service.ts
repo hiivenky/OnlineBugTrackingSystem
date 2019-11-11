@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class ManagerService {
   }
   raiseTicket(model,data,bug,dev){
     let form = new FormData();
-    //  alert("inside service"+startDate)
+    alert("inside service")
     form.append("ticketNote", model.ticketNote);
     form.append("codeSnippet",model.codeSnippet);
     form.append("ticketCriticalLevel",model.criticalLevel);
@@ -58,5 +59,12 @@ export class ManagerService {
     form.append("bugId",bug);
     form.append("developerId",dev);
     return this.myhttp.post("http://localhost:9050/manager/raiseTicket", form, { headers: this.headers });
+  }
+
+  getBugs(){
+    return this.myhttp.get("http://localhost:9050/getBugs",{ headers: this.headers }); 
+  }
+  getPdf(data):Observable<Object>{
+    return this.myhttp.get("http://localhost:9050/pdfreport?bugId="+data,{ headers: this.headers });
   }
 } 
