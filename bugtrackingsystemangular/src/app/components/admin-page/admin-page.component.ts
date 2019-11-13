@@ -19,11 +19,15 @@ export class AdminPageComponent implements OnInit {
   developerToggle=true;
   viewBugs=true;
 
-  constructor() { 
+  constructor(private router:Router) { 
   }
 
   ngOnInit() {
     this.loginName = sessionStorage.getItem("username");
+    if(sessionStorage.getItem('role')==='ROLE_CUSTOMER'){
+      alert('inside role admin')
+      this.router.navigate(['login'])
+    }
   }
   activateAddDeveloper(){
     this.viewBugs=false;

@@ -20,7 +20,7 @@ export class AddBugComponent implements OnInit {
   addBug(){
     this.managerService.addBug(this.model,this.data2).subscribe(
       (data)=>{
-        alert(data);
+        alert(data["response"]);
       },
       (error)=>{
         alert(error.error)

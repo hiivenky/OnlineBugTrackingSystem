@@ -31,6 +31,7 @@ export class LoginPagecomponentComponent implements OnInit {
           let tokenStr='Bearer '+data.token;
           alert(tokenStr);
           sessionStorage.setItem('token',tokenStr);
+          window.location.reload();
           this.user=data;
           return data;
         },(error) => {
@@ -42,9 +43,12 @@ export class LoginPagecomponentComponent implements OnInit {
     subscribe((data)=>{
     this.role=data;
     if(this.role["token"]==='ROLE_ADMIN'){
+      sessionStorage.setItem('role',this.role["token"]);
+
       this.router.navigate(['adminPage'])
     }
     else if(this.role["token"]==='ROLE_CUSTOMER'){
+      sessionStorage.setItem('role',this.role["token"]);
       this.router.navigate(['developerPage']);
     }
     return data 

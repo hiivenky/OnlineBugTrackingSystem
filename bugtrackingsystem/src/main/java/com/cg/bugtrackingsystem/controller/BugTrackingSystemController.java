@@ -174,13 +174,13 @@ public class BugTrackingSystemController {
 				manager = (Manager)employeeService.getUser(userDetails.getUsername());
 				developer.setManager(manager);
 				managerService.addEmployee(developer);
-				Email from = new Email("test@example.com");
-			    String subject = "Sending with SendGrid is Fun";
-			    Email to = new Email("test@example.com");
-			    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+				Email from = new Email("venkymullagiri@gmail.com");
+			    String subject = "Congrats you are now a developer ";
+			    Email to = new Email(developer.getEmailId());
+			    Content content = new Content("text/plain", "loginName : "+developer.getLoginname()+" passoword "+developer.getUserPassword());
 			    Mail mail = new Mail(from, subject, to, content);
-			    System.out.println(System.getenv("SENDGRID_API_KEY"));
-			    SendGrid sg = new SendGrid("SENDGRID_API_KEY");
+			    System.out.println("");
+			    SendGrid sg = new SendGrid("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");
 			    Request request = new Request();
 			    try {
 			      request.setMethod(Method.POST);
@@ -377,12 +377,21 @@ public class BugTrackingSystemController {
 				}
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 				return new ResponseEntity<String>("compiler error",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		return new ResponseEntity<String>("please type the code",HttpStatus.INTERNAL_SERVER_ERROR);
 		
 	}
+	/**
+	 *author: Venkatesh
+	 *Description : This method is used for compilation 
+	 *created Date: 10/11/2019
+	 *last modified : 10/11/2019     
+	 *Input : Authentication
+	 *Output : ResponseEntity         
+	 */
 	@GetMapping(value="/getTicket")
 	public ResponseEntity<?> getTicket(Authentication authentication){
 		System.out.println();
@@ -391,6 +400,7 @@ public class BugTrackingSystemController {
 			SystemUserDetails userDetails = (SystemUserDetails)authentication.getPrincipal();
 			developer = (Developer)employeeService.getUser(userDetails.getUsername());
 			if(developer.isAssignStatus()) {
+				logger.trace("Snippet requested by developer "+developer.getLoginname());
 				return  ResponseEntity.ok(new JwtResponse(developer.getTicketAssigned().getCodeSnippet()));
 			}
 			else {
@@ -402,6 +412,14 @@ public class BugTrackingSystemController {
 		}
 		
 	}
+	/**
+	 *author: Venkatesh
+	 *Description : This method is used for compilation 
+	 *created Date: 10/11/2019
+	 *last modified : 10/11/2019     
+	 *Input : String
+	 *Output : ResponseEntity         
+	 */
 	@PostMapping(value="/submit")
 	public ResponseEntity<?> submit(@RequestParam("finalCode") String code ,Authentication authentication){
 		Developer developer;
@@ -412,12 +430,22 @@ public class BugTrackingSystemController {
 			Ticket ticketAssigned = developer.getTicketAssigned();
 			int id=ticketAssigned.getBug().getBugId();
 			developerService.submit(id,developer.getEmployeeId(),code);
+			logger.trace("code submitted successfully by "+developer.getLoginname());
 			return new ResponseEntity<String>("code submitted successfully",HttpStatus.OK);
 		}
 		else {
+			logger.error("error while submitting");
 			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	/**
+	 *author: Venkatesh
+	 *Description : This method is used for compilation 
+	 *created Date: 10/11/2019
+	 *last modified : 10/11/2019     
+	 *Input : Authentication authentication
+	 *Output : ResponseEntity         
+	 */
 	@GetMapping(value="/getBugs")
 	public ResponseEntity<?> getBugs(Authentication authentication){
 		System.out.println("Inside get Bugs");
@@ -480,6 +508,14 @@ public class BugTrackingSystemController {
 			return new ResponseEntity<String>("please login",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	/**
+	 *author: Venkatesh
+	 *Description : This method is used for compilation 
+	 *created Date: 10/11/2019
+	 *last modified : 10/11/2019     
+	 *Input : String
+	 *Output : ResponseEntity         
+	 */
 	@RequestMapping(value = "/pdfreport", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<InputStreamResource> getCode(@RequestParam("bugId") int id){

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DeveloperService } from 'src/app/services/developer.service';
-
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-compile-bug',
   templateUrl: './compile-bug.component.html',
@@ -46,19 +46,20 @@ export class CompileBugComponent implements OnInit {
         }
       },
       (error)=>{
-        alert(error.error);
+        alert(error.error); 
       }
     )
   }
   submit(){
     this.developerService.submit(this.finalCodeSnippet).subscribe(
-      (data)=>{
-        alert(data);
-        window.location.reload();
-      },
-      (error)=>{
-        alert(error);
+      (data) => {
+        var blob = new Blob([], {type: 'application/pdf'});
+        var filename = 'Brochure.pdf';
+        saveAs(blob,filename);  
       }
+      // (data)=>{
+      //   console.log(data);
+      // }
     )
   }
 

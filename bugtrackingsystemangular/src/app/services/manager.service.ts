@@ -64,7 +64,7 @@ export class ManagerService {
   getBugs(){
     return this.myhttp.get("http://localhost:9050/getBugs",{ headers: this.headers }); 
   }
-  getPdf(data):Observable<Object>{
-    return this.myhttp.get("http://localhost:9050/pdfreport?bugId="+data,{ headers: this.headers });
+  getPdf(data):Observable<Blob>{
+    return this.myhttp.get("http://localhost:9050/pdfreport?bugId="+data,{headers: this.headers , responseType : "blob" });
   }
 } 

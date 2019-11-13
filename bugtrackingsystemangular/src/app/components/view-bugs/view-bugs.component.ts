@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ManagerService } from 'src/app/services/manager.service';
-
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-view-bugs',
   templateUrl: './view-bugs.component.html',
@@ -27,8 +27,10 @@ export class ViewBugsComponent implements OnInit {
 
   activateAddBug(data){
     this.managerService.getPdf(data).subscribe(
-      (data)=>{
-        alert()
+      (response:any) => {
+        var blob = new Blob([response], {type: 'application/pdf'});
+        var filename = 'FinalCode.pdf';
+        saveAs(blob,filename);  
       }
     )
   }

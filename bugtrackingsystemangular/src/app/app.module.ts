@@ -36,12 +36,15 @@ import { DeveloperPageComponent } from './components/developer-page/developer-pa
 import { CompileBugComponent } from './components/compile-bug/compile-bug.component'
 ;
 import { ViewBugsComponent } from './components/view-bugs/view-bugs.component'
+;
+import { LogOutComponent } from './components/log-out/log-out.component'
 const myroute:Routes=[
     {path:'homePage',component:HomePagecomponentComponent},
     {path:'login',component:LoginPagecomponentComponent},
     {path:'registration',component:RegistrationPageComponent},
     {path:'adminPage',component:AdminPageComponent},
     {path:'developerPage',component:DeveloperPageComponent},
+    {path:'logOut',component:LogOutComponent},
     { path: '**', redirectTo: '/homePage', pathMatch: 'full' },
 ]
 @NgModule({
@@ -72,7 +75,8 @@ const myroute:Routes=[
         RaiseTicketComponent,
         DeveloperPageComponent,
         CompileBugComponent,
-        ViewBugsComponent],
+        ViewBugsComponent,
+        LogOutComponent],
     providers: [],
     bootstrap: [AppComponent]
 })

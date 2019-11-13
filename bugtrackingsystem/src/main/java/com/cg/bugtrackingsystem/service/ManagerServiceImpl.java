@@ -221,11 +221,11 @@ public class ManagerServiceImpl implements ManagerService{
 			Email from = new Email("venkymullagiri@gmail.com");
 		    String subject = "Ticket has been assigned review the bug as early as possible";
 		    Email to = new Email(developer.getEmailId());
-		    Content content = new Content("text/plain", "ticket has been assigned by "+developer.getManager().getLoginname()
-		    		+"bug id is ");
+		    Content content = new Content("text/plain", "ticket has been assigned by manager "+developer.getManager().getLoginname()
+		    		+"bug id is "+bug.getBugId());
 		    Mail mail = new Mail(from, subject, to, content);
 		    System.out.println(System.getenv("SENDGRID_API_KEY"));
-		    SendGrid sg = new SendGrid("");
+		    SendGrid sg = new SendGrid("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");
 		    Request request = new Request();
 		    try {
 		      request.setMethod(Method.POST);
@@ -291,16 +291,17 @@ public class ManagerServiceImpl implements ManagerService{
 			}
 		}
 		employee.setRoles("ROLE_CUSTOMER");
+		String password = employee.getUserPassword();
 		employee.setUserPassword(bcryptEncoder.encode(employee.getUserPassword()));
 		developerDao.save(employee);
 		employee.setLoginname(employee.getEmployeeName()+employee.getEmployeeId());
 		developerDao.save(employee);
 		Email from = new Email("venkymullagiri@gmail.com");
-	    String subject = "Sending with SendGrid is Fun";
+	    String subject = "Congratulations you are now a developer";
 	    Email to = new Email(employee.getEmailId());
-	    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+	    Content content = new Content("text/plain", "loginName :"+employee.getLoginname()+" password: "+password);
 	    Mail mail = new Mail(from, subject, to, content);
-	    System.out.println(System.getenv("SENDGRID_API_KEY"));
+	    System.out.println("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");
 	    SendGrid sg = new SendGrid("");
 	    Request request = new Request();
 	    try {

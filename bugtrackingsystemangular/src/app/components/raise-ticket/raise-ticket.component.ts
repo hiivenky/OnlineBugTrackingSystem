@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ManagerService } from 'src/app/services/manager.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-raise-ticket',
@@ -10,7 +11,7 @@ export class RaiseTicketComponent implements OnInit {
 
   model:any={}
 
-  constructor(private managerService:ManagerService) { }
+  constructor(private managerService:ManagerService,private router:Router) { }
 
   ngOnInit() {
   }
@@ -19,7 +20,7 @@ export class RaiseTicketComponent implements OnInit {
     alert(data+" "+bug+" "+dev);
     this.managerService.raiseTicket(this.model,data,bug,dev).subscribe(
       (data)=>{
-        alert(data);
+        alert(data["response"]);
       },
       (error)=>{
         alert(error.error)
